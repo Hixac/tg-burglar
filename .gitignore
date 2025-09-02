@@ -1,0 +1,12 @@
+__pycache__/
+venv/
+appdata.json
+config.py
+exported_info.json
+log.log
+*.png
+*.jpg
+*.mp4
+*.MP4
+*.session
+*.session-journal
