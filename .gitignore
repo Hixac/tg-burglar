@@ -1,5 +1,6 @@
 __pycache__/
 venv/
+sv/
 appdata.json
 config.py
 exported_info.json

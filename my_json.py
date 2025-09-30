@@ -1,8 +1,9 @@
 import json
 from datetime import datetime
 
-def save_info(memes: list[str]) -> None:
-    dic = {"memes": memes, "last_post_time": datetime.now().isoformat()}
+def save_info(memes: list[str], channels: list) -> None:
+    dic = {"memes": memes, "last_post_time": datetime.now().isoformat(), \
+            "channels": channels}
     with open("appdata.json", "w") as f:
         f.write(json.dumps(dic, indent=4))
 
