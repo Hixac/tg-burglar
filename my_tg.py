@@ -1,21 +1,26 @@
-import my_json
-from enum import Enum
-from eprint import eprint
 from config import TG_API_ID, TG_API_HASH, TG_PHONE
 from telethon.sync import TelegramClient
 from telethon.tl.types import PeerChannel
-
-Filename = str
 
 client = TelegramClient('rofls', TG_API_ID, TG_API_HASH)
 client.start(phone=TG_PHONE)
 
 class Channel:
     @property
+    def do_not_name(self) -> bool:
+        return self._do_not_name
+
+    @property
+    def score(self) -> int:
+        return self._score
+
+    @property
     def name(self) -> str:
         return self._identifier
 
-    def __init__(self, identifier: str | int):
+    def __init__(self, identifier: str | int, score: int = 0, do_not_name: bool = False):
+        self._score = score
+        self._do_not_name = do_not_name
         if isinstance(identifier, int):
             self._identifier = PeerChannel(identifier)
         else:
@@ -38,40 +43,8 @@ class Channel:
 
         return [message.download_media(file=message.date.isoformat() + f"_{self._identifier}.jpg")]
 
-channels: list[Channel] = [Channel("neblagUwUdnaya"), Channel("tulpsred"), Channel("milkopechenegi"),\
-         Channel("crabmodern"), Channel("me_mbl"), \
-         Channel("progsiveexp"), Channel("ragtg"), Channel("hotbebranakedstars"), Channel("durtmk"), \
-         Channel("Current_memes"), Channel("memesjuice"), Channel("itvbia"), Channel("bredoq"), \
-         Channel("spazm_aticus")]
+    def inc_score(self):
+        self._score += 1
 
-def load():
-    global chn_idx, channels
-
-    g_info = my_json.load_info()
-    if g_info is not None:
-        channels.clear()
-        for name in g_info['channels']:
-            channels.append(Channel(name))
-load()
-
-class Error(Enum):
-    SAME_POST = 0
-
-chn_idx = 0
-def channel_new_post(memes: list) -> dict | Error:
-    global chn_idx
-
-    channel = channels[chn_idx % len(channels)]
-    chn_idx += 1
-
-    media = channel.get_newest_post()
-    for file in media:
-        if file in memes:
-            return Error.SAME_POST
-
-    eprint(channels)
-    eprint(media)
-    return {"files": media, "channel_name": channel.name}
-
-def get_channels() -> list:
-    return channels
+    def to_dict(self):
+        return {"score": self._score, "do_not_name": self._do_not_name}
